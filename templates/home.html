@@ -1,0 +1,62 @@
+{% extends 'layout.html' %}
+{% block title %}Viaplay uden reklamer{% endblock %}
+{% block content %}
+
+<script>
+	function clicked(li) {
+		link = li.textContent;
+		window.open(`/static/downloads/${link}`);
+	}
+
+	function submitted() {
+		statusEl = document.querySelector('#status');
+		link = document.querySelector('#durum').value;
+
+		if (!link) return statusEl.textContent = "Status: lak dig skriv noget i boksen duh";
+		if (!link.match(/(https|http):\/\/(www\.)?viafree\.dk\/programmer\/.+/gm)) return statusEl.textContent =
+			"Status: dit URL ser ikke rigtigt ud. det skal ligne det her: https://www.viafree.dk/programmer/reality/paradise-hotel/saeson-17/episode-1";
+
+		statusEl.textContent = "Status: korrekt link! klik venligst ikke på noget og vent. fortæller dig snarest om der var en fejl eller success! (kan tage op til 2 min)";
+		document.querySelector('#indsend').disabled = true;
+
+		fetch('ytdl/', { method: 'POST', body: link }).then(async (data) => {
+			try {
+				json = await data.json();
+			} catch (e) {
+				return statusEl.textContent = "Status: Der opstod en ukendt fejl.";
+			}
+			if (json.error) {
+				return statusEl.textContent = "Status: Der opstod en ukendt fejl.";
+			}
+
+			statusEl.textContent = "Status: Success! Videresender dig nu. Hvis det ikke virker, så gå til /static/downloads/" + json.data; // fix det felix
+
+			window.open(`/static/downloads/${json.data}`);
+		});
+	}
+</script>
+
+<style>
+	.file {
+		color: rgb(38, 106, 207);
+		cursor: pointer;
+	}
+</style>
+
+<h1>Viaplay uden reklamer</h1>
+<h2>- af ya boi villads</h2>
+
+<p>Skriv URL'et fra Viaplay der hvor du vil downloade din video fra her:</p>
+<input type="text" id="durum" placeholder="https://www.viafree.dk/blablabla">
+<button id="indsend" onclick=submitted()>Indsend</button>
+
+<p id="status">Status: afventer at du indsender en video</p>
+
+<strong>Allerede downloadet filer:</strong>
+<ul>
+	{% for file in files %}
+	<li class="file" onclick=clicked(this)>{{ file }}</li>
+	{% endfor %}
+</ul>
+
+{% endblock %}
