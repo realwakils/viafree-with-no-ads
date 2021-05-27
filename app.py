@@ -22,7 +22,8 @@ def ytdl():
 	os.chdir(app.static_folder + "/downloads/")
 	ydl_opts = {
 		"progress_hooks": [hook],
-		"quiet": True if True else False
+		"quiet": True if True else False,
+		"geo-bypass": True
 	}
 	try:
 		with youtube_dl.YoutubeDL(ydl_opts) as ydl:
