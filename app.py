@@ -23,8 +23,7 @@ def ytdl():
 	ydl_opts = {
 		"progress_hooks": [hook],
 		"quiet": True if True else False,
-		"geo_bypass": True,
-		"geo_bypass_country": "DK"
+		"proxy": "socks5://95.154.20.222/"
 	}
 	try:
 		with youtube_dl.YoutubeDL(ydl_opts) as ydl:
