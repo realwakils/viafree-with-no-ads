@@ -23,7 +23,7 @@ def ytdl():
 	ydl_opts = {
 		"progress_hooks": [hook],
 		"quiet": True if True else False,
-		"geo-bypass": True
+		"geo_bypass": True
 	}
 	try:
 		with youtube_dl.YoutubeDL(ydl_opts) as ydl:
